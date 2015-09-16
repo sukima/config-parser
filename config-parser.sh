@@ -1,29 +1,29 @@
-# function to parse the ini style configuration file
-config_parser () {
-	local iniFile="$1";
-	local tmpFile=$( mktemp /tmp/`basename $iniFile`.XXXXXX );
-	local intLines;
-	local binSED=$( which sed );
+parse_ini() {
+  local var val section
+  local system_sed=$(which sed)
+  local safe_name_replace='s/[ 	]*$//;s/[^a-zA-Z0-9_]/_/g'
+  cat ${1:--} | \
+    $system_sed '/^[ 	]*#/d;/^[ 	]*$/d' | \
+    while IFS="= " read var val; do
+      case "$var" in
+        \[*])
+          if [[ -n "$section" ]]; then echo "}"; fi
+          section=$(echo "${var:1:${#var}-2}" | "$system_sed" "$safe_name_replace")
+          section="${section#"${section%%[![:space:]]*}"}"
+          section="${section%"${section##*[![:space:]]}"}"
+          echo "config.section.${section}() {"
+          ;;
+        *)
+          var=$(echo "$var" | "$system_sed" "$safe_name_replace")
+          var="${var#"${var%%[![:space:]]*}"}"
+          var="${var%"${var##*[![:space:]]}"}"
+          echo "  $var=$val"
+          ;;
+      esac
+    done
+  echo "}"
+}
 
-	# copy the ini file to the temporary location
-	cp $iniFile $tmpFile;
-
-	# remove tabs or spaces around the =
-	$binSED -i -e 's/[ \t]*=[ \t]*/=/g' $tmpFile;
-
-	# transform section labels into function declaration
-	$binSED -i -e 's/\[\([A-Za-z0-9_]*\)\]/config.section.\1() \{/g' $tmpFile;
-	$binSED -i -e 's/config\.section\./\}\'$'\nconfig\.section\./g' $tmpFile;
-
-	# remove first line
-	$binSED -i -e '1d' $tmpFile;
-
-	# add the last brace
-	echo -e "\n}" >> $tmpFile;
-
-	# now load the file
-	source $tmpFile;
-
-	# clean up
-	rm -f $tmpFile;
+config_parser() {
+  eval "$(parse_ini $1)"
 }
