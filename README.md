@@ -1,4 +1,4 @@
-config-parser
+config-parser [![Travis Build](https://img.shields.io/travis/sukima/config-parser/master.svg)](https://travis-ci.org/sukima/config-parser)
 =============
 
 Configuration (ini style) parser in Bash

@@ -2,3 +2,4 @@
 ######################
 .DS_Store*
 config-parser.sublime-*
+node_modules/

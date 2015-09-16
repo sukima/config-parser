@@ -1,0 +1,25 @@
+{
+  "name": "config-parser",
+  "private": true,
+  "version": "2.0.0",
+  "description": " Configuration (ini style) parser in Bash ",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "bats --tap test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sukima/config-parser.git"
+  },
+  "author": "Devin Weaver <suki@tritarget.org> (http://tritarget.org/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sukima/config-parser/issues"
+  },
+  "homepage": "https://github.com/sukima/config-parser#readme",
+  "devDependencies": {
+    "bat-fork": "^0.4.0"
+  }
+}
