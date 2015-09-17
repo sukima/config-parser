@@ -1,17 +1,20 @@
 parse_ini() {
-  local var val section
+  [[ -z "$1" || -e "$1" ]] || return 1
   local system_sed=$(which sed)
   local safe_name_replace='s/[ 	]*$//;s/[^a-zA-Z0-9_]/_/g'
+  echo "config.global() {"
+  echo "  :"
   cat ${1:--} | \
     $system_sed '/^[ 	]*#/d;/^[ 	]*$/d' | \
     while IFS="= " read var val; do
       case "$var" in
         \[*])
-          if [[ -n "$section" ]]; then echo "}"; fi
+          echo "}"
           section=$(echo "${var:1:${#var}-2}" | "$system_sed" "$safe_name_replace")
           section="${section#"${section%%[![:space:]]*}"}"
           section="${section%"${section##*[![:space:]]}"}"
           echo "config.section.${section}() {"
+          echo "  :"
           ;;
         *)
           var=$(echo "$var" | "$system_sed" "$safe_name_replace")

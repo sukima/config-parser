@@ -5,28 +5,49 @@ source "$BATS_TEST_DIRNAME/../config-parser.sh"
 
 setup() {
   run parse_ini "$BATS_TEST_DIRNAME/fixtures/example.ini"
+  eval "$output"
 }
 
 @test "Does not pollute environment on initial run" {
   [ -z "$foofoofoo" ]
 }
 
+@test "Provides a default config.global section" {
+  config.global
+  [ "$foofoofoo" = "global variables" ]
+}
+
 @test "Assigns environment for a section" {
-  eval "$output"
   config.section.dev
   [ "$foofoofoo" = "foo bar" ]
 }
 
 @test "Handles space sperated assignments" {
-  eval "$output"
   config.section.prod
   [ "$foofoofoo" = "bar foo" ]
 }
 
+@test "Handles sections with no variables" {
+  run config.section.empty_section
+  [ "$status" = 0 ]
+}
+
 @test "Ignores comments" {
-  eval "$output"
   config.section.prod
   [ -z "$baz" ]
+}
+
+@test "Gracefully handles missing files" {
+  run parse_ini "$BATS_TEST_DIRNAME/fixtures/nonexistent.ini"
+  [ "$status" -ne 0 ] # returns with an error code
+  run eval "$output"
+  [ "$status" -eq 0 ] # output can be parsed by eval
+}
+
+@test "Gracefully handles an empty file" {
+  run parse_ini "$BATS_TEST_DIRNAME/fixtures/empty.ini"
+  run eval "$output"
+  [ "$status" -eq 0 ] # output can be parsed by eval
 }
 
 @test "Is composable" {
