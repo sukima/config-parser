@@ -38,8 +38,19 @@ setup() {
 }
 
 @test "Handles unquoted values" {
-  config.section.unquoted
-  [ "$foofoofoo" = "echo echo echo" ]
+  config.section.quotes
+  [ "$foo" = "echo echo echo" ]
+}
+
+@test "Handles unquoted values with quotes" {
+  config.section.quotes
+  [ "$foofoo" = "echo 'echo'" ]
+  [ "$foofoofoo" = "echo \"echo\"" ]
+}
+
+@test "Handles quotes in quoted values" {
+  config.section.quotes
+  [ "$quotedfoo" = "test 'quotes'" ]
 }
 
 @test "Handles trailing semi-colons" {

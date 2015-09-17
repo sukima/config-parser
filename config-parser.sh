@@ -2,7 +2,7 @@ parse_ini() {
   [[ -z "$1" || -e "$1" ]] || return 1
   local system_sed=$(which sed)
   local safe_name_replace='s/[ 	]*$//;s/[^a-zA-Z0-9_]/_/g'
-  local trimming="s/^[ 	\"';]*//;s/[ 	\"';]*$//"
+  local trimming="s/^[\"']\(.*\)[\"'][;]*$/\1/;s/\"/\\\\\"/g"
   echo "config.global() {"
   echo "  :"
   cat ${1:--} | \
