@@ -1,3 +1,6 @@
+# Parse INI style config files in Bash
+# Source: https://github.com/sukima/config-parser
+# Version: 2.1.2
 parse_ini() {
   [[ -z "$1" || -e "$1" ]] || return 1
   local system_sed=$(which sed)

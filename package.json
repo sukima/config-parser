@@ -1,7 +1,7 @@
 {
   "name": "config-parser",
   "private": true,
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": " Configuration (ini style) parser in Bash ",
   "directories": {
     "test": "test"
