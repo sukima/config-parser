@@ -37,6 +37,16 @@ setup() {
   [ -z "$baz" ]
 }
 
+@test "Handles unquoted values" {
+  config.section.unquoted
+  [ "$foofoofoo" = "echo echo echo" ]
+}
+
+@test "Handles trailing semi-colons" {
+  config.section.semicolons
+  [ "$foofoofoo" = "semicolons work" ]
+}
+
 @test "Gracefully handles missing files" {
   run parse_ini "$BATS_TEST_DIRNAME/fixtures/nonexistent.ini"
   [ "$status" -ne 0 ] # returns with an error code
